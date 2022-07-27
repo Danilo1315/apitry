@@ -1,10 +1,9 @@
-FROM node:16.15.1
-
-COPY . /usr/src/app
+FROM node:lts-alpine
 WORKDIR /usr/src/app
-COPY package*.json ./
-
+COPY ["package.json", "package-lock.json*", "npm-shrinkwrap.json*", "./"]
+RUN npm install --production --silent && mv node_modules ../app/
+COPY . .
 EXPOSE 5000
-RUN npm install
-
-CMD ["node","index.js"]
+RUN chown -R node /usr/src/app
+USER node
+CMD ["npm", "start"]
